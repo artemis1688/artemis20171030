@@ -36,6 +36,15 @@ gulp.task('jade', function() {
     // var YOUR_LOCALS = {};
     gulp.src('./source/**/*.jade')
         .pipe($.plumber())
+        .pipe($.data(function() {
+            var khData = require('./source/data/data.json');
+            var menu = require('./source/data/menu.json');
+            var source = {
+                'khData': khData,
+                'menu': menu
+            };
+            return source;
+        }))
         .pipe($.jade({
             pretty: true
         }))
@@ -129,8 +138,8 @@ gulp.task('watch', function() {
 });
 
 gulp.task('deploy', function() {
-  return gulp.src('./public/**/*')
-    .pipe($.ghPages());
+    return gulp.src('./public/**/*')
+        .pipe($.ghPages());
 });
 
 gulp.task('build', gulpSequence('clean', 'jade', 'sass', 'babel', 'vendorJs'))
